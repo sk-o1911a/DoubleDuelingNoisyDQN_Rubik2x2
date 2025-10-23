@@ -18,7 +18,7 @@ class ReplayBuffer:
         self._nq: Deque[Transition] = deque()
 
     def __len__(self) -> int:
-        return len(self.buf)
+        return len(self.buffer)
 
     def reset_episode(self):
         self._nq.clear()
@@ -50,7 +50,7 @@ class ReplayBuffer:
             if di:
                 break
 
-        self.buf.append((s0, a0, R, sN, doneN))
+        self.buffer.append((s0, a0, R, sN, doneN))
 
         # remove the oldest transition
         if self._nq[0][4]:
@@ -59,7 +59,7 @@ class ReplayBuffer:
             self._nq.popleft()
 
     def sample(self, batch_size: int = 256, device: str = "cpu"):
-        batch = random.sample(self.buf, batch_size)
+        batch = random.sample(self.buffer, batch_size)
         s, a, r, s2, d = zip(*batch)
 
         s_arr = np.asarray(s, dtype=np.float32)

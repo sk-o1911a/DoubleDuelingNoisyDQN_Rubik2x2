@@ -35,10 +35,6 @@ def ida_star_solve(start_cube: np.ndarray,
             return f, list(path)
 
         f = g + heuristic(cube)
-        if f > bound:
-            return f, None
-        if is_solved(cube):
-            return f, list(path)
 
         # Transposition Table prune
         if tt is not None:
