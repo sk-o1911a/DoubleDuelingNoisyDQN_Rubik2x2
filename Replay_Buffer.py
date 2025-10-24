@@ -68,9 +68,16 @@ class ReplayBuffer:
         r_arr = np.asarray(r, dtype=np.float32)
         d_arr = np.asarray(d, dtype=np.bool_)
 
+        # pin memory for faster transfer to GPU
+        s_t = torch.from_numpy(s_arr).pin_memory()
+        a_t = torch.from_numpy(a_arr).pin_memory()
+        r_t = torch.from_numpy(r_arr).pin_memory()
+        s2_t = torch.from_numpy(s2_arr).pin_memory()
+        d_t = torch.from_numpy(d_arr).pin_memory()
         return (
-            torch.from_numpy(s_arr).to(device),
-            torch.from_numpy(a_arr).to(device),
-            torch.from_numpy(r_arr).to(device),
-            torch.from_numpy(s2_arr).to(device),
-            torch.from_numpy(d_arr).to(device),)
+            s_t.to(device, non_blocking=True),
+            a_t.to(device, non_blocking=True),
+            r_t.to(device, non_blocking=True),
+            s2_t.to(device, non_blocking=True),
+            d_t.to(device, non_blocking=True),
+        )

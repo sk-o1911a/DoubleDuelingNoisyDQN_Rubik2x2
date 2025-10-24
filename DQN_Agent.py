@@ -39,7 +39,7 @@ class DQNAgent:
 
         if action_mask is not None:
             mask = torch.tensor(action_mask, dtype=torch.bool, device=self.device)
-        q[~mask] = -float("inf")
+            q[~mask] = -float("inf")
 
         a = int(torch.argmax(q).item())
         return a
@@ -74,3 +74,15 @@ class DQNAgent:
 
         return float(loss.item())
 
+    def save(self, path):
+        torch.save({
+            "q": self.q.state_dict(),
+            "target": self.target.state_dict(),
+            "opt": self.opt.state_dict(),
+        }, path)
+
+    def load(self, path, map_location=None):
+        ckpt = torch.load(path, map_location=map_location or self.device)
+        self.q.load_state_dict(ckpt["q"])
+        self.target.load_state_dict(ckpt["target"])
+        self.opt.load_state_dict(ckpt["opt"])
